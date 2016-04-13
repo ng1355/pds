@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+	<head>
+		<title>{{name}}</title>
+		<meta charset="UTF-8">
+		<script>
+		</script>
+	</head>
+	<body>
+		<a href="/surveys/">Return to surveys</a><br>
+		<p>{{owner}}'s {{name}}</p><br>
+		<p>{{option1}}: {{option1Percent}}%</p><br>
+		<p>{{option2}}: {{option2Percent}}%</p><br>
+		<p>Number of votes: {{numOfVotes}}</P><br>
+		<form method="POST">
+			<input type="submit" value="{{option1}}" name="option1">
+			<input type="submit" value="{{option2}}" name="option2">
+		</form>
+		<br>
+		{% if invalid %}
+		<p>You can't vote if you're Anonymous or if you've already voted!</p>
+		<br>
+		{% endif %}
+		<h2>What others have said...</h2>
+		{% for users in usersVoted %}
+		<li>{{users}}</li>
+		{% endfor %}
+	</body>
+</html>

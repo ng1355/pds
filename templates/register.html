@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Register</title>
+		<meta charset="UTF-8">
+		<style>
+			body{
+				background-image: url("http://i.imgur.com/Ml6lkXg.gif");
+				background-repeat: repeat;
+				}
+			h1{
+				font-family:verdana;
+				color:white;
+				white-space:nowrap;
+				}
+			p{
+				color:white;
+			}
+			input.txtfield{
+				border-radius:10px;
+				height: 20px;
+				}
+		</style>
+	</head>
+				
+	<body>
+		{% if loggedIn %}
+			<h1>You're already logged in as: {{uname}}</p>
+			<a href="/profile/{{uname}}">Return</a>
+		{% else %}
+			<h1>Register for a new account:</h1>
+			<form method="post">
+				<input class="txtfield" type="text" placeholder="Enter username" name="uname"></input>
+				<br><br>
+				<input class="txtfield" type="password" placeholder="Enter password" name="pword"></input>
+				<br>
+				<input type="submit" value="Submit!"></input>
+			</form>
+			<a href="/">Already a member? Click here!</a>
+			{% if invalid %}
+				<p>Username taken!</p>
+			{% endif %}
+		{% endif %}
+	</body>
+</html>
+	 
+		
+

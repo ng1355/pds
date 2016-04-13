@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Surveys</title>
+		<meta charset="UTF-8">
+		<script>
+			ul{
+				list-style-type: none;
+				padding: 0;
+				margin: 0;
+			}
+		</script>
+	</head>
+
+	<body>
+		<ul>
+			{% if empty %} 
+				<li><p>None yet!</p></li>
+			{% else %}
+				{% for survey in surveyList %}
+				<li><a href="/surveys/{{survey}}">{{survey}}</a></li>
+				{% endfor %}
+			{%endif%} 
+		</ul>  
+		<a href="/">Home</a>
+	</body>
+</html>

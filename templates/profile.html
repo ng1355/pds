@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+	<title>{{uname}}'s profile</title>
+	<meta charset="UTF-8">
+	<style>
+		body{
+			background-image: url("http://i.imgur.com/Ml6lkXg.gif");
+			background-repeat: repeat;
+			}
+		p{
+			font-family:verdana;
+			color:white;
+		}
+		p.title{
+			font-family:verdana;
+			font-size:16pt;
+			color:white;
+		}
+		li{
+			font-family:verdana;
+			color:white;
+		}
+	</style>
+
+</head>
+<body>
+	<a href="/logout">Logout</a>
+	<a href="/deleteAccount">Delete account?</a>
+	<a href="/createSurvey">Create a survey!</a>
+	<a href="/surveys/">Browse surveys!</a><br>
+	<p class="title">{{uname}}'s profile</p><br>
+	<p>{{uname}} has also voted on...</p><br>
+	{% for votes in votedOn %}
+	<li>{{votes}}</li>
+	{% endfor %}
+
+</body>
+</html>
