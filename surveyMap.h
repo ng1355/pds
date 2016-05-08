@@ -5,8 +5,11 @@
 #include <mutex>
 #include <map>
 
+#include "fileManager.hpp"
+
 namespace backend{
 class surveyData;
+class userMap;
 class surveyMap{
 public:
 	surveyMap();
@@ -17,6 +20,8 @@ public:
 	void clearSurveys();
 	surveyData* getSurvey(const std::string& name)const;
 	std::string whoVoted(const std::string& name)const;
+    std::map<std::string, surveyData*>::iterator begin();
+    std::map<std::string, surveyData*>::iterator end();
 private:
 	std::map<std::string, surveyData*> listOfSurveys;
 	mutable std::mutex lock;

@@ -41,15 +41,17 @@ def root(invalid = False):
 	return render_template("root.html")
 
 @app.route("/register", methods=['POST', 'GET'])
-def register(loggedIn = False, invalid = False):
+def register(loggedIn = False, taken = False, invalid = False):
 	if inSession() == '1':
 		return render_template("register.html", loggedIn = True, uname = session.get("uname", None))
 	if request.method == 'POST':
 		uname = request.form["uname"]
 		if comm("isRegistered\n" + uname) == '1':
+			return render_template("register.html", taken = True)
+		elif comm("register\n" + uname + '\n' + request.form["pword"]) == "0":
 			return render_template("register.html", invalid = True)
 		else:
-			comm("register\n" + uname + '\n' + request.form["pword"])
+			pass
 		return redirect(url_for("root"))
 	return render_template("register.html")
 
@@ -72,23 +74,20 @@ def survey(name = None, invalid = False):
 		usersVoted = {"None yet!"}
 	else:
 		usersVoted.pop()
-	print "getsurvey data: " + comm("getSurvey\n" + name)
 	if request.method == 'POST':
-		if request.form.get("option1", "error") == tmp[1]:
+		if request.form.get("option1", "error") == tmp[2]:
 			if comm("vote\n" + '1\n' + session.get("uname", "Anon") + '\n' + tmp[0]) == '0':
-				return render_template("survey.html", invalid = True, name=tmp[0], option1=tmp[1], option2=tmp[2], owner=tmp[3], option1Percent=tmp[4], option2Percent=tmp[5], numOfVotes=tmp[6], usersVoted = usersVoted)
-		elif request.form.get("option2", "error") == tmp[2]:
+				return render_template("survey.html", invalid = True, name=tmp[0], question = tmp[1], option1=tmp[2], option2=tmp[3], owner=tmp[4], option1Percent=tmp[5], option2Percent=tmp[6], numOfVotes=tmp[7], usersVoted = usersVoted)
+		elif request.form.get("option2", "error") == tmp[3]:
 			if comm("vote\n" + '2\n' + session.get("uname", "Anon") + '\n' + tmp[0]) == '0':
-				return render_template("survey.html", invalid = True, name=tmp[0], option1=tmp[1], option2=tmp[2], owner=tmp[3], option1Percent=tmp[4], option2Percent=tmp[5], numOfVotes=tmp[6], usersVoted = usersVoted)
-		else:
-			pass
+				return render_template("survey.html", invalid = True, name=tmp[0], question = tmp[1], option1=tmp[2], option2=tmp[3], owner=tmp[4], option1Percent=tmp[5], option2Percent=tmp[6], numOfVotes=tmp[7], usersVoted = usersVoted)
 		tmp = comm("getSurvey\n" + name).split("\n")
 		usersVoted = comm("whoVoted\n" + name).split('\n')
 		if usersVoted[0] == "":
 			usersVoted = {"None yet!"}
 		else:
 			usersVoted.pop()
-	return render_template("survey.html", name=tmp[0], option1=tmp[1], option2=tmp[2], owner=tmp[3], option1Percent=tmp[4], option2Percent=tmp[5], numOfVotes=tmp[6], usersVoted = usersVoted)
+	return render_template("survey.html", name=tmp[0], question = tmp[1], option1=tmp[2], option2=tmp[3], owner=tmp[4], option1Percent=tmp[5], option2Percent=tmp[6], numOfVotes=tmp[7], usersVoted = usersVoted)
 
 @app.route("/createSurvey", methods=['POST', 'GET'])
 def createSurvey():

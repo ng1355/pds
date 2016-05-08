@@ -8,39 +8,35 @@
 namespace backend{
 	userMap::userMap(){}
 
-	void userMap::addUser(const std::string& uname, const std::string& pword){
-		lock.lock();
-		listOfUsers[uname] = new user(uname, pword);
-		lock.unlock();
+	user* userMap::addUser(const std::string& uname, const std::string& pword){
+        std::lock_guard<std::mutex> lockg(lock);
+		users[uname] = new user(uname, pword);
+        return users[uname];
 	}
 
 	bool userMap::removeUser(const std::string& uname){
-		lock.lock();
+        std::lock_guard<std::mutex> lockg(lock);
 		try{
-			delete listOfUsers.at(uname);
-			listOfUsers.erase(uname);
-			lock.unlock();
+			delete users.at(uname);
+			users.erase(uname);
 			return true;
 		}
 		catch(std::out_of_range& ex){
-			lock.unlock();
 			return false;
 		}
 	}
 
 	void userMap::clearUsers(){
-	lock.lock();
-	for(std::map<std::string, user*>::iterator i = listOfUsers.begin(); i != listOfUsers.end(); ++i){
+    std::lock_guard<std::mutex> lockg(lock);
+	for(std::map<std::string, user*>::iterator i = users.begin(); i != users.end(); ++i){
 		delete i->second;
 	}
-	listOfUsers.clear();
-	lock.unlock();
+	users.clear();
 	}
 
 	std::string userMap::votedOn(const std::string& uname)const{
-		std::lock_guard<std::mutex> lockg(lock);
 		try{
-			return listOfUsers.at(uname)->votedOn();
+			return users.at(uname)->votedOn();
 		}
 		catch(std::out_of_range& ex){
 			return "0";
@@ -49,14 +45,12 @@ namespace backend{
 	}
 
 	bool userMap::isRegistered(const std::string& uname)const{
-		std::lock_guard<std::mutex> lockg(lock);
-		return listOfUsers.count(uname) > 0;
+		return users.count(uname) > 0;
 	}
 
 	user* userMap::getUser(const std::string& uname)const{
-		std::lock_guard<std::mutex> lockg(lock);
 		try{
-			return listOfUsers.at(uname);
+			return users.at(uname);
 		}
 		catch(std::out_of_range& ex){
 			return NULL;
@@ -65,13 +59,21 @@ namespace backend{
 	}
 
 	bool userMap::validLogin(const std::string& uname, const std::string& pword)const{
-		std::lock_guard<std::mutex> lockg(lock);
 		try{
-			return listOfUsers.at(uname)->getPass() == pword;
+			return users.at(uname)->getPass() == pword;
 		}
 		catch(std::out_of_range& ex){
 			return false;
 		}
 		return false;
 	}
+
+    std::map<std::string, user*>::iterator userMap::begin(){
+        return users.begin();
+    }
+    std::map<std::string, user*>::iterator userMap::end(){
+        return users.end();
+    }
+    
+    
 }

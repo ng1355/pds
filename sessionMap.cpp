@@ -6,33 +6,28 @@
 
 namespace backend{
 	void sessionMap::joinSession(const std::string& uname){
-		lock.lock();
-		session[uname] = uname;
-		lock.unlock();
+        std::lock_guard<std::mutex> lockg(lock);
+        session[uname] = uname;
 	}
 
 	bool sessionMap::inSession(const std::string& uname)const{
-		std::lock_guard<std::mutex> lockg(lock);
 		return session.count(uname) > 0;
 	}
 
 	bool sessionMap::leaveSession(const std::string& uname){
-		lock.lock();
-		try{
+        std::lock_guard<std::mutex> lockg(lock);
+        try{
 			session.at(uname);
 			session.erase(uname);
-			lock.unlock();
 			return true;
 		}
 		catch(std::out_of_range& ex){
-			lock.unlock();
 			return false;
 		}
 	}
 	
 	void sessionMap::clearSession(){
-		lock.lock();
+        std::lock_guard<std::mutex> lockg(lock);
 		session.clear();
-		lock.unlock();
 	}
 }
