@@ -37,9 +37,12 @@
 				<input type="submit" value="Submit!"></input>
 			</form>
 			<a href="/">Already a member? Click here!</a>
-			{% if invalid %}
+			{% if taken %}
 				<p>Username taken!</p>
 			{% endif %}
+			{%if invalid%}
+				<p>Username can only be alphanumeric with no special characters and be at least three characters long!<br>You also cannot have a blank password.</p>
+			{%endif%}
 		{% endif %}
 	</body>
 </html>

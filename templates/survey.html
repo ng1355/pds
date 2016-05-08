@@ -8,7 +8,8 @@
 	</head>
 	<body>
 		<a href="/surveys/">Return to surveys</a><br>
-		<p>{{owner}}'s {{name}}</p><br>
+		<p>{{owner}}'s {{name}}</p>
+		<p>{{question}}</p>
 		<p>{{option1}}: {{option1Percent}}%</p><br>
 		<p>{{option2}}: {{option2Percent}}%</p><br>
 		<p>Number of votes: {{numOfVotes}}</P><br>
@@ -19,7 +20,6 @@
 		<br>
 		{% if invalid %}
 		<p>You can't vote if you're Anonymous or if you've already voted!</p>
-		<br>
 		{% endif %}
 		<h2>What others have said...</h2>
 		{% for users in usersVoted %}
