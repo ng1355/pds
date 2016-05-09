@@ -95,9 +95,9 @@ namespace backend{
     std::string surveyData::save(){
         std::string output;
         std::lock_guard<std::mutex> lockg(lock);
-        output = owner + '\0' + name + '\0' + question + '\0' + option1 + '\0' + option2 + '\0' + std::to_string(numVoted) + '\0' + std::to_string(option1Votes) + '\0' + std::to_string(option2Votes)+ '\0';
+        output = owner + '\0' + name + '\0' + question + '\0' + option1 + '\0' + option2 + '\0' + std::to_string(numVoted) + '\0' + std::to_string((int)option1Votes) + '\0' + std::to_string((int)option2Votes)+ '\0';
         for(std::map<std::string, std::string>::iterator i = usersVoted.begin(); i != usersVoted.end(); ++i)
-            output + i->first + '\0' + i->second + '\0';
+            output += i->first + '\0' + i->second + '\0';
         return output;
     }
 }

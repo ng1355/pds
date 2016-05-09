@@ -1,6 +1,7 @@
 #include <utility>
 #include <string>
 #include <vector>
+#include <iostream>
 
 #include "user.h"
 
@@ -32,8 +33,9 @@ namespace backend{
         std::string output = "";
         std::lock_guard<std::mutex> lockg(lock);
         output = uname + '\0' + pword + '\0';
-        for(std::pair<std::string, std::string> p : votes)
-            output + std::get<0>(p) + '\0' + std::get<1>(p) + '\0';
+        for(std::pair<std::string, std::string> p : votes){
+            output += std::get<0>(p) + '\0' + std::get<1>(p) + '\0';
+        }
         return output;
     }
 }

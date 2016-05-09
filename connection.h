@@ -9,7 +9,7 @@
 namespace backend{
 class connection{
 public:
-	connection(const std::string& ip = "", const std::string& port = "1234");
+    connection(const std::string& ip = "", const std::string& port = "1234");
 	int getSocketfd()const;
 	void setSocketfd(int newfd);
 	int getStatus()const;
@@ -18,8 +18,7 @@ public:
 	addrinfo* getHostInfoList()const;
 private:
 	int status, socketfd, yes;
-	std::string ip;
-	std::string port;
+	std::string ip, port;
 	struct addrinfo host_info;
 	struct addrinfo *host_info_list; 
 };

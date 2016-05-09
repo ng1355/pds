@@ -23,6 +23,49 @@
 using namespace std;
 using namespace backend;
 
+//Allows for control from command line
+void CLI(){
+    int new_sd;
+    struct sockaddr_storage their_addr;
+    socklen_t addr_size;
+    
+    char incoming_data_buffer[1024];
+    char data[1024];
+    stringstream s;
+    ssize_t bytes_recieved = 0;
+    string arg = "";
+    
+    connection conn(nullptr, "1337");
+    int status = conn.getStatus();
+    cout << "CLI active..." << endl;
+    status = listen(conn.getSocketfd(), 5);
+    if (status == -1)  cout << "listen error" << endl;
+    
+    while(true){
+        addr_size = sizeof(their_addr);
+        new_sd = accept(conn.getSocketfd(), (struct sockaddr *)&their_addr, &addr_size);
+        if (new_sd == -1)
+        {
+            cout << "listen error" << endl;
+        }
+        
+        cout << "Waiting to recieve data" << endl;
+        bytes_recieved = recv(new_sd, incoming_data_buffer, 1024, 0);
+        if (bytes_recieved == 0) cout << "host shut down." << endl;
+        else if (bytes_recieved == -1) cout << "recieve error!" << endl;
+        
+        //debugging...
+        cout << "Bytes recieved: " << bytes_recieved << endl;
+        incoming_data_buffer[bytes_recieved] = '\0';
+        cout << "data buff: " << incoming_data_buffer << endl;
+        
+        
+        arg =
+        close(new_sd);
+    }
+
+}
+
 //continuously saves users and surveys in memory to a file
 //every interval of time specified by the second param.
 void saver(fileManager* fm, unsigned time = 15){
@@ -265,8 +308,12 @@ void socketMess(){
     cout << "done!\n";
     
     //Startng saver in the background
-    thread s(saver, fm, 15);
+    thread s(saver, fm, 5);
     s.detach();
+    
+    //Starting CLI
+    //thread cli(CLI);
+    //cli.detach();
     
     connection conn;
     int status = conn.getStatus();

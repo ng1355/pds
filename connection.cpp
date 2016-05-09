@@ -15,7 +15,7 @@ namespace backend{
 		host_info.ai_family = AF_UNSPEC;
 		host_info.ai_socktype = SOCK_STREAM;
 		host_info.ai_flags = AI_PASSIVE;
-		status = getaddrinfo(NULL, "1234", &host_info, &host_info_list);
+		status = getaddrinfo(NULL, port.c_str(), &host_info, &host_info_list);
 	    if (status != 0)  std::cout << "getaddrinfo error" << gai_strerror(status) ;
 
 		std::cout << "creating socket..." << std::endl;

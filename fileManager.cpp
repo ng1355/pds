@@ -17,7 +17,7 @@
 #include "userMap.h"
 #include "surveyMap.h"
 
-#define trunc std::ios::in | std::ios::out | std::ios::trunc
+#define trunc std::ios::in | std::ios::trunc
 
 namespace backend{
     fileManager::fileManager(userMap* users,  surveyMap* surveys, std::string usrDir, std::string survDir): usrDir(usrDir), survDir(survDir), users(users), surveys(surveys){}
@@ -39,12 +39,12 @@ namespace backend{
     //as such, the loop iterates over every two items, before directly pushing back the created pair into the vector
     //as this method is a friend of user's.
     void fileManager::populateUserMap(){
+        std::lock_guard<std::mutex> lockg(lock);
         std::ifstream input(usrDir);
         std::string line = "";
         user* tmp;
         std::vector<std::string> args;
         size_t start, end;
-        std::lock_guard<std::mutex> lockg(lock);
         while(getline(input, line)){
             start = 0; end = 0;
             while((end = line.find('\0', start)) != std::string::npos){
@@ -60,25 +60,28 @@ namespace backend{
     }
 
         void fileManager::populateSurveyMap(){
-            std::ifstream input(survDir);
+            std::lock_guard<std::mutex> lockg(lock);
+            std::ifstream input(survDir, std::ios::in);
             std::string line = "";
             surveyData* tmp;
             std::vector<std::string> args;
-            size_t start = 0, end = 0;
-            std::lock_guard<std::mutex> lockg(lock);
+            size_t start, end;
             while(getline(input, line)){
+                start = 0, end = 0;
+                std::cout << "got line; " << line << std::endl;
                 while((end = line.find('\0', start)) != std::string::npos){
                     args.push_back(line.substr(start, end - start));
+                    std::cout << "Substr: " << line.substr(start, end - start) << std::endl;
                     start = end + 1;
                 }
                 surveys->addSurvey(args[1], tmp = new surveyData(args[0], args[1], args[2], args[3], args[4]));
-                    if(args.size() > 5){
-                    tmp->setNumVoted(std::stoi(args[5]));
-                    tmp->setOption1Votes(std::stof(args[6]));
-                    tmp->setOption2Votes(std::stof(args[7]));
-                    for(size_t index = 8; index <= args.size(); index += 2)
-                        tmp->usersVoted[args[index]] = args[index + 1];
-                    }
+                tmp->setNumVoted(std::stoi(args[5]));
+                tmp->setOption1Votes(std::stof(args[6]));
+                tmp->setOption2Votes(std::stof(args[7]));
+                std::cout << "size is: " << args.size() << std::endl;
+                for(size_t index = 8; index <= args.size() - 2; index += 2)
+                    tmp->usersVoted[args[index]] = args[index + 1];
+                args.clear();
             }
             input.close();
         }
