@@ -10,7 +10,6 @@
 #include <mutex>
 #include <thread>
 #include <chrono>
-#include <thread>
 
 #include "connection.h"
 #include "surveyData.h"
@@ -35,7 +34,8 @@ void CLI(){
     ssize_t bytes_recieved = 0;
     string arg = "";
     
-    connection conn(nullptr, "1337");
+    connection conn;
+    conn.server(nullptr, "1337");
     int status = conn.getStatus();
     cout << "CLI active..." << endl;
     status = listen(conn.getSocketfd(), 5);
@@ -300,7 +300,7 @@ void socketMess(){
 	userMap* listOfUsers = new userMap();
 	surveyMap* listOfSurveys = new surveyMap();
     //this manages saving/loading the contents of the userMap and surveyMap to/form files
-    fileManager* fm = new fileManager(listOfUsers, listOfSurveys, "/Users/Nikita/Documents/Parallel and Distributed Systems/project/part 4/listOfUsers.txt", "/Users/Nikita/Documents/Parallel and Distributed Systems/project/part 4/listOfSurveys.txt");
+    fileManager* fm = new fileManager(listOfUsers, listOfSurveys, "listOfUsers.txt", "listOfSurveys.txt");
 
     
     cout << "populating users and surveys...\n";
@@ -316,6 +316,7 @@ void socketMess(){
     //cli.detach();
     
     connection conn;
+    conn.server(nullptr, "1234");
     int status = conn.getStatus();
     cout << "Listening for connection..." << endl;
     status = listen(conn.getSocketfd(), 5);

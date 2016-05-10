@@ -68,10 +68,8 @@ namespace backend{
             size_t start, end;
             while(getline(input, line)){
                 start = 0, end = 0;
-                std::cout << "got line; " << line << std::endl;
                 while((end = line.find('\0', start)) != std::string::npos){
                     args.push_back(line.substr(start, end - start));
-                    std::cout << "Substr: " << line.substr(start, end - start) << std::endl;
                     start = end + 1;
                 }
                 surveys->addSurvey(args[1], tmp = new surveyData(args[0], args[1], args[2], args[3], args[4]));
